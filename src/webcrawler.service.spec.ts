@@ -59,7 +59,7 @@ describe('PostService', () => {
         number: 5,
         title: 'A tiny, decentralised tool to explore the small web',
         points: 88,
-        comments: 12,
+        comments: 0,
       },
     ];
 

@@ -12,13 +12,18 @@ export class WebCrawlerService {
   private parsePost(selector: cheerio.CheerioAPI, e: any): Post {
     const number = Number(selector(e).find('.rank').text());
     const title = selector(e).find('.titleline').find('a').first().text();
-    const points = Number(
-      selector(e).next().find('.score').text().split(' ')[0],
-    );
+    let points = Number(selector(e).next().find('.score').text().split(' ')[0]);
     const nbsp = String.fromCharCode(160);
-    const comments = Number(
+    let comments = Number(
       selector(e).next().find('a').last().text().split(nbsp)[0],
     );
+
+    if (isNaN(points)) {
+      points = 0;
+    }
+    if (isNaN(comments)) {
+      comments = 0;
+    }
 
     return {
       number,
