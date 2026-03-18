@@ -35,7 +35,9 @@ export class WebCrawlerService {
     });
 
     if (!res.data) {
-      throw new Error('Failed to get posts.');
+      const errorMsg = 'Failed to get posts from webpage.';
+      this.logger.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     const selector = cheerio.load(res.data as string);
