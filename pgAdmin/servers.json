@@ -1,0 +1,16 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Exercise DB",
+      "Group": "Servers",
+      "Port": 5432,
+      "Username": "postgres",
+      "Host": "sb-ex-postgres",
+      "MaintenanceDB": "sb-ex-db",
+      "ConnectionParameters": {
+        "sslmode": "prefer",
+        "passfile": "/.pgpass"
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ services:
   sb-ex:
     depends_on:
       - sb-ex-postgres
+      - sb-ex-pgadmin
     build: .
     ports:
       - 3000:3000
@@ -19,3 +20,27 @@ services:
       - type: bind
         source: seed.sql
         target: /docker-entrypoint-initdb.d/seed.sql
+  sb-ex-pgadmin:
+    depends_on:
+      - sb-ex-postgres
+    image: dpage/pgadmin4:9.13.0
+    user: root
+    ports:
+      - 3100:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGPASS_FILE=/tmp/pgpass/.pgpass
+    volumes:
+      - type: bind
+        source: ./pgAdmin/servers.json
+        target: /pgadmin4/servers.json
+      - type: bind
+        source: ./pgAdmin/.pgpass
+        target: /tmp/pgpass/.pgpass
+    entrypoint: >
+      /bin/sh -c "
+      sudo chown 5050:5050 /tmp/pgpass/.pgpass;
+      chmod 600 /tmp/pgpass/.pgpass;
+      /entrypoint.sh
+      "
