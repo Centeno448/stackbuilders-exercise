@@ -3,4 +3,4 @@ eslint $(git diff --cached --name-only --diff-filter=ACMR -- '***.ts' | sed 's| 
 
 git update-index --again
 
-npm test
+npm run test:precommit
