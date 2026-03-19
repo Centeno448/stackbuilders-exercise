@@ -3,23 +3,55 @@
     <meta charset='utf-8' />
     <link rel='stylesheet' href='styles.css' />
     <title>Stackbuilders exercise</title>
+    <link
+      href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css'
+      rel='stylesheet'
+      integrity='sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB'
+      crossorigin='anonymous'
+    />
   </head>
   <body>
-    <a href='/?filter=more'><button>More</button></a>
-    <a href='/?filter=less'><button>Less</button></a>
+    <div class='container'>
+      <h1 class='text-center'>Posts - Hacker News </h1>
 
-    {{#if error}}
-      <p>Unable to fetch posts.</p>
-    {{else}}
-      {{#each posts as |post|}}
-        <li>{{number}}.
-          {{title}}
-          -
-          {{points}}
-          points -
-          {{comments}}
-          comments</li>
-      {{/each}}
-    {{/if}}
+      <div class='container mb-2'>
+        <div
+          class='row text-center align-items-center justify-content-md-center'
+        >
+          <span class='col col-sm-1'>Filters:</span>
+          <div class='col col-sm-5'>
+            <a href='/'><button class='btn btn-secondary'>Clear</button></a>
+            <a href='/?filter=more'><button class='btn btn-success'>More than 5
+                words</button></a>
+            <a href='/?filter=less'><button class='btn btn-danger'>Less or equal
+                to 5 words</button></a>
+          </div>
+        </div>
+      </div>
+
+      {{#if error}}
+        <p>Unable to fetch posts.</p>
+      {{else}}
+        <ul class='list-group'>
+          {{#each posts as |post|}}
+            <li class='list-group-item fs-6'>
+              {{number}}.
+              {{title}}
+
+              <span class='badge text-bg-primary rounded-pill'>{{points}}
+                points</span>
+              <span class='badge text-bg-secondary rounded-pill'>{{comments}}
+                comments</span>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </div>
+
   </body>
+  <script
+    src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js'
+    integrity='sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI'
+    crossorigin='anonymous'
+  ></script>
 </html>
