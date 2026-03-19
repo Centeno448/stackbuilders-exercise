@@ -1,0 +1,17 @@
+services:
+  sb-ex:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DB_HOST=sb-ex-postgres
+      - DB_USER=postgres
+      - DB_PASS=pass
+  sb-ex-postgres:
+    image: postgres:18.3
+    environment:
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - type: bind
+        source: seed.sql
+        target: /docker-entrypoint-initdb.d/seed.sql
