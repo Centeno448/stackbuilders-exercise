@@ -4,6 +4,7 @@ import { WebCrawlerService } from './webcrawler.service';
 import { PostService } from './post.service';
 import { type PostFilter } from './interfaces/post-filter';
 import { FilterValidationPipe } from './pipes/filter-validation.pipe';
+import { DBService } from './db.service';
 
 @Controller()
 export class AppController {
@@ -11,6 +12,7 @@ export class AppController {
   constructor(
     private readonly webCrawlerService: WebCrawlerService,
     private readonly postService: PostService,
+    private readonly dbService: DBService,
   ) {}
 
   @Get()
@@ -18,6 +20,8 @@ export class AppController {
   async index(
     @Query('filter', new FilterValidationPipe()) filter?: PostFilter,
   ): Promise<AppRootViewModel> {
+    await this.dbService.registerRequest(filter);
+
     const viewModel: AppRootViewModel = { posts: [], error: false };
 
     try {
