@@ -1,22 +1,53 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import * as cheerio from 'cheerio';
+
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'node:path';
+import { NestFactory } from '@nestjs/core';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: NestExpressApplication;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+  beforeAll(async () => {
+    app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-    app = moduleFixture.createNestApplication();
+    app.useStaticAssets(join(__dirname, '..', 'public'));
+    app.setBaseViewsDir(join(__dirname, '..', 'views'));
+    app.setViewEngine('hbs');
+
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer()).get('/').expect(200);
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe('/ (GET)', () => {
+    it('returns 200', () => {
+      return request(app.getHttpServer()).get('/').expect(200);
+    });
+
+    it('shows 30 posts', async () => {
+      const res = await request(app.getHttpServer()).get('/');
+
+      const selector = cheerio.load(res.text);
+
+      expect(selector('li').length).toBe(30);
+    });
+
+    it('extracted data correctly', async () => {
+      const res = await request(app.getHttpServer()).get('/');
+
+      const selector = cheerio.load(res.text);
+
+      const firstPost = selector('li').first();
+
+      const firstPostText = firstPost.text().replaceAll(/[\s]+/g, ' ').trim();
+
+      expect(firstPostText).toMatch(
+        /[\d]+.\s[\w\W]+[\d]+\spoints\s[\d]+\scomments/,
+      );
+    });
   });
 });
