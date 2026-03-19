@@ -44,7 +44,7 @@ describe('PostService', () => {
       points: 2,
     },
     {
-      title: 'post four with less-five',
+      title: 'This is - a self-explained example',
       comments: 13,
       number: 1,
       points: 7,
