@@ -22,7 +22,7 @@ export class TracingInterceptor implements NestInterceptor {
         const res = context.switchToHttp().getResponse<Response>();
         const msg = `${req.requestId} - ${res.statusCode} ${req.method} ${req.path} ${Date.now() - now}ms`;
 
-        if (res.statusCode > 399) {
+        if (res.statusCode > 499) {
           this.logger.error(msg);
         } else {
           this.logger.log(msg);
