@@ -1,5 +1,7 @@
 services:
   sb-ex:
+    depends_on:
+      - sb-ex-postgres
     build: .
     ports:
       - 3000:3000
