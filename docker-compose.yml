@@ -10,6 +10,7 @@ services:
       - DB_USER=postgres
       - DB_PASS=pass
       - DB_PORT=5432
+      - CACHE_TTL=60000 # 1 minute
   sb-ex-postgres:
     image: postgres:18.3
     environment:
