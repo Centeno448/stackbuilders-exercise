@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Sequelize } from 'sequelize-typescript';
 import { PostFilter } from './interfaces/post-filter';
 import { Request } from './models/request';
+import { UUID } from 'crypto';
 
 @Injectable()
 export class DBService implements OnModuleDestroy, OnModuleInit {
@@ -33,7 +34,11 @@ export class DBService implements OnModuleDestroy, OnModuleInit {
     await this.sequelize.close();
   }
 
-  async registerRequest(filter?: PostFilter) {
-    await Request.create({ filter: filter ?? 'none', time: new Date() });
+  async registerRequest(data: { filter?: PostFilter; id: UUID }) {
+    await Request.create({
+      id: data.id,
+      filter: data.filter ?? 'none',
+      time: new Date(),
+    });
   }
 }
