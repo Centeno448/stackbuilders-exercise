@@ -1,19 +1,58 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Sequelize } from 'sequelize-typescript';
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import { PostFilter } from './interfaces/post-filter';
 import { Request } from './models/request';
 import { UUID } from 'crypto';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class DBService implements OnModuleDestroy, OnModuleInit {
-  private readonly sequelize: Sequelize;
+  private sequelize: Sequelize;
+  private readonly logger = new Logger(DBService.name);
 
-  constructor(private readonly configService: ConfigService) {
-    const host = this.configService.get<string>('dbHost');
-    const port = this.configService.get<number>('dbPort');
-    const user = this.configService.get<string>('dbUser');
-    const pass = this.configService.get<string>('dbPass');
+  constructor(private readonly configService: ConfigService) {}
+
+  private async prepareDatabase(config: ConfigService) {
+    const host = config.get<string>('dbHost');
+    const port = config.get<number>('dbPort');
+    const user = config.get<string>('dbUser');
+    const pass = config.get<string>('dbPass');
+    const DB_NAME = 'sb-ex-db';
+
+    const options: SequelizeOptions = {
+      host,
+      port,
+      username: user,
+      password: pass,
+      logging: false,
+      dialect: 'postgres',
+      dialectOptions: {
+        multipleStatements: true,
+      },
+    };
+
+    const tmpSequelize = new Sequelize({ ...options, database: 'postgres' });
+
+    const exists = await tmpSequelize.query(
+      `SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'`,
+      { type: QueryTypes.SELECT },
+    );
+
+    if (!exists.length) {
+      this.logger.log('Database not found, seeding');
+      await tmpSequelize.query(`CREATE DATABASE "${DB_NAME}";`);
+    } else {
+      this.logger.log('Database found, skipping seed.');
+    }
+
+    await tmpSequelize.close();
+
     this.sequelize = new Sequelize({
       database: 'sb-ex-db',
       host,
@@ -24,10 +63,12 @@ export class DBService implements OnModuleDestroy, OnModuleInit {
       dialect: 'postgres',
       models: [Request],
     });
+
+    await this.sequelize.sync();
   }
 
   async onModuleInit() {
-    await this.sequelize.sync();
+    await this.prepareDatabase(this.configService);
   }
 
   async onModuleDestroy() {

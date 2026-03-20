@@ -6,9 +6,9 @@ export class Request extends Model {
   @Column({ primaryKey: true, type: DataType.UUID })
   declare id: UUID;
 
-  @Column
+  @Column({ type: DataType.STRING(10), allowNull: false })
   declare filter: string;
 
-  @Column
+  @Column({ allowNull: false })
   declare time: Date;
 }

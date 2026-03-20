@@ -16,10 +16,6 @@ services:
     image: postgres:18.3
     environment:
       - POSTGRES_PASSWORD=pass
-    volumes:
-      - type: bind
-        source: seed.sql
-        target: /docker-entrypoint-initdb.d/seed.sql
   sb-ex-pgadmin:
     depends_on:
       - sb-ex-postgres
