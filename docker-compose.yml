@@ -7,6 +7,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      - APP_PORT=3000
       - DB_HOST=sb-ex-postgres
       - DB_USER=postgres
       - DB_PASS=pass

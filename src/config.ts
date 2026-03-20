@@ -4,4 +4,5 @@ export default () => ({
   dbUser: process.env.DB_USER,
   dbPass: process.env.DB_PASS,
   cacheTTL: process.env.CACHE_TTL,
+  appPort: process.env.APP_PORT,
 });
